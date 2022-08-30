@@ -7,6 +7,7 @@ import (
 
 func TestGetVideoLength(t *testing.T) {
 	mp4 := "test/big_buck_bunny.mp4"
+	quote := "test/big_buck_'.mp4"
 	avi := "test/drop.avi"
 	flv := "test/small.flv"
 	notvid := "test/notvideo.mp4"
@@ -17,6 +18,12 @@ func TestGetVideoLength(t *testing.T) {
 		t.Error("failed mp4", err)
 	}
 	log.Println("mp4 length", len)
+
+	len, err = GetVideoLength(quote)
+	if err != nil {
+		t.Error("failed quote", err)
+	}
+	log.Println("quote length", len)
 
 	len, err = GetVideoLength(avi)
 	if err != nil {
