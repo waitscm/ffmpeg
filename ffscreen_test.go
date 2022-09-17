@@ -16,10 +16,22 @@ func TestTakeScreenShot(t *testing.T) {
 			"./test/big_buck_bunny.jpg",
 			false,
 		},
+		{
+			"drop",
+			"./test/drop.avi",
+			"./test/drop.jpg",
+			false,
+		},
+		{
+			"small",
+			"./test/small.flv",
+			"./test/smal.jpg",
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := TakeScreenShot(tt.path, tt.out, 30); (err != nil) != tt.wantErr {
+			if err := TakeScreenShot(tt.path, tt.out, 5); (err != nil) != tt.wantErr {
 				t.Errorf("TakeScreenShot() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

@@ -1,9 +1,9 @@
 package ffmpeg
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os/exec"
 )
 
@@ -18,18 +18,21 @@ func TakeScreenShot(inputPath string, outputPath string, seekSeconds int) error 
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	slurp, _ := ioutil.ReadAll(stderr)
-	log.Printf("output%s\n", slurp)
+
+	if len(slurp) > 0 {
+		return errors.New(string(slurp))
+	}
 
 	if err := cmd.Wait(); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return nil
