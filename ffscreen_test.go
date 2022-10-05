@@ -25,7 +25,7 @@ func TestTakeScreenShot(t *testing.T) {
 		{
 			"small",
 			"./test/small.flv",
-			"./test/smal.jpg",
+			"./test/small.jpg",
 			false,
 		},
 	}

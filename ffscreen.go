@@ -12,7 +12,7 @@ func TakeScreenShot(inputPath string, outputPath string, seekSeconds int) error 
 	ospath := ensureVolPath(inputPath)
 	outPath := ensureVolPath(outputPath)
 
-	seek := fmt.Sprintf("%02d:%02d:%02d", seekSeconds/3600, seekSeconds/60, seekSeconds%60)
+	seek := fmt.Sprintf("%02d:%02d:%02d", seekSeconds/3600, (seekSeconds%3600)/60, seekSeconds%60)
 
 	cmd := exec.Command("ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", seek, "-i", ospath, "-frames:v", "1", "-q:v", "32", outPath)
 

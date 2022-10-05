@@ -19,4 +19,15 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println(filename, "duration", dur)
+
+	if dur > 20.0 {
+		dur -= 7.0
+	} else {
+		dur = dur / 2.0
+	}
+
+	err = ffmpeg.TakeScreenShot(filename, "screenshot.jpg", int(dur))
+	if err != nil {
+		fmt.Println("TakeScreenShot", err)
+	}
 }
