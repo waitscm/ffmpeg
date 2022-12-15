@@ -2,7 +2,6 @@ package ffmpeg
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -30,8 +29,7 @@ func GetVideoLength(path string) (float64, error) {
 
 	data, err := exec.Command(parts[0], parts[1:]...).Output()
 	if err != nil {
-		log.Println("ffmpeg:GetVideoLength failed ", ospath, err, data)
-		return 0.0, err
+		return 0.0, fmt.Errorf("ffmpeg:GetVideoLength failed %v - %v: %w", ospath, string(data), err)
 	}
 
 	stringVal := string(data)
@@ -42,8 +40,7 @@ func GetVideoLength(path string) (float64, error) {
 
 	length, err := strconv.ParseFloat(stringVal, 64)
 	if err != nil {
-		log.Println("ffmpeg:GetVideoLength can't parse float ", ospath, stringVal, err)
-		return 0.0, err
+		return 0.0, fmt.Errorf("ffmpeg:GetVideoLength can't parse float %v - %v: %w", ospath, stringVal, err)
 	}
 	return length, nil
 }
