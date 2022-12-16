@@ -40,7 +40,9 @@ func main() {
 	if err != nil {
 		fmt.Println("GetVideoStats", err)
 	}
-	fmt.Println("GetVideoStats elapsed", time.Since(start), stats)
-	w, h, br, dur := stats.GetVideoStats()
-	fmt.Println("width:", w, "height:", h, "bitrate", br, "duration", dur)
+	fmt.Println("GetVideoStats elapsed", time.Since(start))
+	vs, has := stats.GetVideoStream()
+	fmt.Println("VideoStats", "\n\tfilename", filename, "\n\ttitle:", stats.Format.Tags.Title, "\n\thas video stream:", has, "\n\tw", vs.Width, "x h", vs.Height,
+		"\n\tbitrate:", vs.BitRate, "\n\tduration s:", vs.Duration, "\n\tpixel format:", vs.PixelFormat, "\n\tcodec:", vs.CodecName,
+		"\n\tbits per raw sample:", vs.BitsPerRawSample, "\n\tavg frame rate:", vs.AvgFrameRate, "raw:", vs.AvgFrameRateRaw)
 }
