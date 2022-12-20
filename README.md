@@ -25,3 +25,7 @@ Get the video length of a file.
 Pass in the video and output screenshot with second mark to take screen at.
 
 `err := TakeScreenShot("/path/to/video.mp4", "/path/to/out.jpg", 25)`
+
+Or with Millisecond.
+
+`err := TakeScreenShotMS("/path/to/video.mp4", "/path/to/out.jpg", 2500)`

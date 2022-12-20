@@ -34,6 +34,9 @@ func TestTakeScreenShot(t *testing.T) {
 			if err := TakeScreenShot(tt.path, tt.out, 5); (err != nil) != tt.wantErr {
 				t.Errorf("TakeScreenShot() error = %v, wantErr %v", err, tt.wantErr)
 			}
+			if err := TakeScreenShotMS(tt.path, tt.out, 5000); (err != nil) != tt.wantErr {
+				t.Errorf("TakeScreenShot() error = %v, wantErr %v", err, tt.wantErr)
+			}
 		})
 	}
 }
