@@ -8,6 +8,18 @@ import (
 	"github.com/waitscm/ffmpeg"
 )
 
+func intPtr(i int) *int {
+	return &i
+}
+
+func floatPtr(i float32) *float32 {
+	return &i
+}
+
+func stringPtr(i string) *string {
+	return &i
+}
+
 func main() {
 	if len(os.Args) == 0 {
 		fmt.Println("./example <video file>")
@@ -22,18 +34,120 @@ func main() {
 	}
 	fmt.Println("GetVideoLength elapsed", time.Since(start), filename, "duration", dur)
 
-	if dur > 20.0 {
-		dur -= 7.0
-	} else {
-		dur = dur / 2.0
-	}
+	dur = dur * 1000 / 4.0
 
 	start = time.Now()
-	err = ffmpeg.TakeScreenShot(filename, "screenshot.jpg", int(dur))
+	err = ffmpeg.TakeScreenShotMS(filename, "screenshot.jpg", int64(dur))
 	if err != nil {
 		fmt.Println("TakeScreenShot", err)
+		os.Exit(1)
 	}
 	fmt.Println("TakeScreenShot elapsed", time.Since(start))
+
+	tests := []struct {
+		name string
+		f    ffmpeg.ScreenFilter
+	}{
+		{
+			name: "320x240",
+			f: ffmpeg.ScreenFilter{
+				Width:  intPtr(320),
+				Height: intPtr(240),
+			},
+		},
+		{
+			name: "320x-1",
+			f: ffmpeg.ScreenFilter{
+				Width: intPtr(320),
+			},
+		},
+		{
+			name: "samesize",
+			f:    ffmpeg.ScreenFilter{},
+		},
+		{
+			name: "half",
+			f: ffmpeg.ScreenFilter{
+				ReductionFactor: floatPtr(2),
+			},
+		},
+		{
+			name: "double",
+			f: ffmpeg.ScreenFilter{
+				ReductionFactor: floatPtr(.5),
+			},
+		},
+		{
+			name: "200x200pad",
+			f: ffmpeg.ScreenFilter{
+				Width:  intPtr(200),
+				Height: intPtr(200),
+				Pad:    true,
+			},
+		},
+		{
+			name: "320x240hflip",
+			f: ffmpeg.ScreenFilter{
+				Width:          intPtr(320),
+				Height:         intPtr(240),
+				HorizontalFlip: true,
+			},
+		},
+		{
+			name: "320x-1hflip",
+			f: ffmpeg.ScreenFilter{
+				Width:          intPtr(320),
+				HorizontalFlip: true,
+			},
+		},
+		{
+			name: "halfhflip",
+			f: ffmpeg.ScreenFilter{
+				ReductionFactor: floatPtr(2),
+				HorizontalFlip:  true,
+			},
+		},
+		{
+			name: "doublehflip",
+			f: ffmpeg.ScreenFilter{
+				ReductionFactor: floatPtr(.5),
+				HorizontalFlip:  true,
+			},
+		},
+		{
+			name: "200x200padhflip",
+			f: ffmpeg.ScreenFilter{
+				Width:          intPtr(200),
+				Height:         intPtr(200),
+				Pad:            true,
+				HorizontalFlip: true,
+			},
+		},
+		{
+			name: "rawhflip",
+			f: ffmpeg.ScreenFilter{
+				RawFilter: stringPtr("hflip"),
+			},
+		},
+	}
+
+	for _, t := range tests {
+		start = time.Now()
+		out := fmt.Sprintf("%v.jpg", t.name)
+
+		ffmpeg.TakeScreenShotFilter(filename, out, int64(dur), t.f)
+
+		fmt.Println("TakeScreenShotFilter elapsed", t.name, time.Since(start))
+	}
+
+	for i := 1; i <= 32; i += 2 {
+		start = time.Now()
+		out := fmt.Sprintf("quality_%v.jpg", i)
+
+		ffmpeg.TakeScreenShotFilter(filename, out, int64(dur), ffmpeg.ScreenFilter{Quality: intPtr(i)})
+
+		fmt.Println("TakeScreenShotFilter elapsed quality", i, time.Since(start))
+	}
 
 	start = time.Now()
 	stats, err := ffmpeg.GetVideoStats(filename)
