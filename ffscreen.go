@@ -1,6 +1,7 @@
 package ffmpeg
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -107,8 +108,9 @@ func takeSShot(in, out, seek string, f *ScreenFilter) error {
 		cmdStr = append(cmdStr, "-vf", f.String())
 	}
 	cmdStr = append(cmdStr, out)
-	cmd := exec.Command("ffmpeg", cmdStr...)
-	cmd.WaitDelay = 5 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "ffmpeg", cmdStr...)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
