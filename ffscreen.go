@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"time"
 )
 
 type ScreenFilter struct {
@@ -107,6 +108,7 @@ func takeSShot(in, out, seek string, f *ScreenFilter) error {
 	}
 	cmdStr = append(cmdStr, out)
 	cmd := exec.Command("ffmpeg", cmdStr...)
+	cmd.WaitDelay = 5 * time.Second
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
